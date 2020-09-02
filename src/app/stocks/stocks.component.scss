@@ -1,0 +1,15 @@
+:host {
+    padding: 10px;
+}
+nav {
+    a {
+        padding: 10px 20px;
+        background: #e0e0e0;
+        color: #565656;
+        text-decoration: none;
+    }
+    a.active {
+        color: white;
+        background: #313131;
+    }
+}

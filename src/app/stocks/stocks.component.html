@@ -1,0 +1,8 @@
+<nav>
+    <a *ngFor="let stock of stocks"
+       [routerLink]="'/stocks/'+stock" 
+       [routerLinkActiveOptions]="{exact: true}" 
+       routerLinkActive="active"
+    >{{stock}}</a>
+</nav>  
+<router-outlet></router-outlet>
