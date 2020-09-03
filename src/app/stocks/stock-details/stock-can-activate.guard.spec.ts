@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StockGuard } from './stock-can-activate.guard';
-import * as constants from './stocks.constants';
-import { Router, ActivatedRouteSnapshot } from '@angular/router';
+import { Router } from '@angular/router';
 
 describe('StockGuard', () => {
   let guard: StockGuard;

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { StocksComponent } from './stocks/stocks.component';
-import { StockGuard } from './stocks/stock-can-activate.guard';
 import { StockDetailsComponent } from './stocks/stock-details/stock-details.component';
+import { StockGuard } from './stocks/stock-details/stock-can-activate.guard';
 
 const routes: Routes = [
   {

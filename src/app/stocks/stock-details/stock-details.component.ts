@@ -1,21 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DataService } from '../data.service';
+import { Subscription } from 'rxjs';
+import { IStockDetailsParams } from '../stocks.models';
+import { IOrderBook } from '../order-book/order-book.models';
 
 @Component({
   selector: 'app-stock-details',
   templateUrl: './stock-details.component.html',
   styleUrls: ['./stock-details.component.scss']
 })
-export class StockDetailsComponent implements OnInit {
+export class StockDetailsComponent implements OnDestroy {
 
-  stockName: string;
-  constructor(private activeRoute: ActivatedRoute) {
-    this.activeRoute.params.subscribe(val  => {
-      this.stockName = val.name;
+  orderBookSunscription: Subscription;
+  orderBook: IOrderBook;
+
+  constructor(
+    private activeRoute: ActivatedRoute,
+    private data: DataService
+  ) {
+    this.activeRoute.params.subscribe((val: IStockDetailsParams)  => {
+      if (this.orderBookSunscription) {
+        this.orderBookSunscription.unsubscribe();
+      }
+      this.orderBookSunscription = this.data.getOrderBook(val.name).subscribe(ob => {
+        console.log(ob);
+        this.orderBook = ob;
+      });
+
     });
   }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    if (this.orderBookSunscription) {
+      this.orderBookSunscription.unsubscribe();
+    }
   }
 
 }
