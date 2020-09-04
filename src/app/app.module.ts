@@ -11,7 +11,7 @@ import { StockDetailsComponent } from './stocks/stock-details/stock-details.comp
   declarations: [
     AppComponent,
     StocksComponent,
-    StockDetailsComponent
+    StockDetailsComponent,
   ],
   imports: [
     BrowserModule,

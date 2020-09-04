@@ -10,7 +10,7 @@ import { OrderBook } from './order-book/order-book';
 })
 export class DataService {
 
-  frequency = 1000;
+  frequency = 50;
 
   orderBooksMap: IOrderBooksMap = {};
 

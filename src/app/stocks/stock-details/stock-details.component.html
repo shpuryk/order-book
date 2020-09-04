@@ -1,2 +1,18 @@
-<p>stock-details works!</p>
-<!-- {{orderBook.name}} -->
+<p>stock-details</p>
+<table>
+    <tr>
+        <th>Bid</th>
+        <th>Price</th>
+        <th>Ask</th>
+    </tr>
+    <tr *ngFor="let ask of orderBook.asks | keyvalue:sortFn | slice:orderBook.asks.size - depth" class="ask">
+        <td class="empty"></td>
+        <td>{{ask.key}}</td>
+        <td>{{ask.value}}</td>
+    </tr>
+    <tr *ngFor="let bid of orderBook.bids | keyvalue:sortFn | slice:0:depth" class="bid">
+        <td>{{bid.value}}</td>
+        <td>{{bid.key}}</td>
+        <td class="empty"></td>
+    </tr>
+</table>

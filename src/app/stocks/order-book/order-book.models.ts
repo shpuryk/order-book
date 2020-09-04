@@ -1,7 +1,7 @@
 export interface IOrderBook {
     name: string;
-    bids: number[];
-    asks: number[];
+    bids: Map<string, number>;
+    asks: Map<string, number>;
     update: (order: IOrder) => IOrderBook;
 }
 
@@ -14,12 +14,13 @@ export interface IOrderBooksMap {
 
 export interface IOrder {
     Type: OrderType;
-    OrderID: number;
+    OrderID?: string;
+    OriginalOrderID?: string;
+    NewOrderID?: string;
     Side?: OrderSide;
-    NewOrderID?: number;
     Shares?: number;
     Stock?: string;
-    Price?: number;
+    Price?: string;
     ExecutedShares?: number;
     CanceledShares?: number;
 }
@@ -37,3 +38,4 @@ export enum OrderSide {
     Buy = 'B',
     Sell = 'S'
 }
+
