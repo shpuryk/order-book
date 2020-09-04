@@ -5,7 +5,6 @@ import { Subscription, interval, Subject } from 'rxjs';
 import { IStockDetailsParams } from '../stocks.models';
 import { IOrderBook } from '../order-book/order-book.models';
 import { throttle, takeUntil, debounce, distinctUntilChanged } from 'rxjs/operators';
-import { KeyValue } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DEFAULT_DEPTH } from '../stocks.constants';
 
@@ -16,7 +15,6 @@ import { DEFAULT_DEPTH } from '../stocks.constants';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StockDetailsComponent implements OnInit, OnDestroy {
-
   orderBookSunscription: Subscription;
   orderBook: IOrderBook;
   depth = DEFAULT_DEPTH;
@@ -71,14 +69,6 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
       }
       this.data.setFrequency(v);
     });
-  }
-
-  sortFn = (a: KeyValue<string, string>, b: KeyValue<string, string>): number => {
-    return a.key < b.key ? 1 : (b.key < a.key ? -1 : 0);
-  }
-
-  getAskStart(size): number {
-    return size - this.depth < 0 ? 0 : size - this.depth;
   }
 
   ngOnDestroy(): void {

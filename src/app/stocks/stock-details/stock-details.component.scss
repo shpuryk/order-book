@@ -4,20 +4,3 @@ form {
         margin: 10px;
     }
 }
-table {
-    th, td {
-        min-width: 100px;
-        text-align: center;
-    }
-
-    .ask {
-        td:not(.empty) {
-            background: #ff8e85;
-        }
-    }
-    .bid {
-        td:not(.empty) {
-            background: #a9cc81;
-        }
-    }
-}

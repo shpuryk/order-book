@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StockDetailsComponent } from './stock-details.component';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject, Subscription } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { DataService } from '../data.service';
 import { FormBuilder } from '@angular/forms';
 
@@ -27,7 +27,6 @@ describe('StockDetailsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StockDetailsComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
   });
 
   it('should get order book on change params (stock)', async(() => {
@@ -39,9 +38,7 @@ describe('StockDetailsComponent', () => {
   it('should switch order book on next change params (stock)', async(() => {
     spyOn(mockDataService, 'getOrderBook').and.callThrough();
     mockParams.next({name: 'Stock1'});
-    // spyOn(component.orderBookSunscription, 'unsubscribe');
     mockParams.next({name: 'Stock2'});
-    // expect(component.orderBookSunscription.unsubscribe).toHaveBeenCalled();
     expect(mockDataService.getOrderBook).toHaveBeenCalledWith('Stock2');
   }));
 

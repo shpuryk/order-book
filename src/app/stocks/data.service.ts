@@ -33,17 +33,13 @@ export class DataService {
         switchMap(f => {
           return this.getNextOrders(stockName, orderBookMeta.index).pipe(
             map(order => {
-              console.log(orderBookMeta.index++);
+              console.log(order);
+              orderBookMeta.index++;
               return orderBookMeta.orderBook.update(order);
             })
           );
         })
       ),
-      // this.getNextOrders(stockName, orderBookMeta.index).pipe(
-      //   map(order => {
-      //     console.log(orderBookMeta.index++);
-      //     return orderBookMeta.orderBook.update(order);
-      // }))
     );
   }
 

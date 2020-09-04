@@ -7,7 +7,12 @@ import { StockGuard } from './stocks/stock-details/stock-can-activate.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'stocks',
+    redirectTo: 'stocks/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'stocks',
+    redirectTo: 'stocks/',
     pathMatch: 'full',
   },
   {
