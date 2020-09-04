@@ -1,11 +1,17 @@
-<p>stock-details</p>
+<div>
+    <form [formGroup]="configForm">
+        Depth: <input type="number" min="1" formControlName="depth">
+        Frequency: <input type="number" min="1" formControlName="frequency">ms
+    </form>
+</div>
+
 <table>
     <tr>
         <th>Bid</th>
         <th>Price</th>
         <th>Ask</th>
     </tr>
-    <tr *ngFor="let ask of orderBook.asks | keyvalue:sortFn | slice:orderBook.asks.size - depth" class="ask">
+    <tr *ngFor="let ask of orderBook.asks | keyvalue:sortFn | slice: getAskStart(orderBook.asks.size)" class="ask">
         <td class="empty"></td>
         <td>{{ask.key}}</td>
         <td>{{ask.value}}</td>

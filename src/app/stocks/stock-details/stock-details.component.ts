@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../data.service';
-import { Subscription, interval } from 'rxjs';
+import { Subscription, interval, Subject } from 'rxjs';
 import { IStockDetailsParams } from '../stocks.models';
 import { IOrderBook } from '../order-book/order-book.models';
-import { throttle } from 'rxjs/operators';
+import { throttle, takeUntil, debounce, distinctUntilChanged } from 'rxjs/operators';
 import { KeyValue } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DEFAULT_DEPTH } from '../stocks.constants';
 
 @Component({
   selector: 'app-stock-details',
@@ -13,20 +15,20 @@ import { KeyValue } from '@angular/common';
   styleUrls: ['./stock-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StockDetailsComponent implements OnDestroy {
+export class StockDetailsComponent implements OnInit, OnDestroy {
 
   orderBookSunscription: Subscription;
   orderBook: IOrderBook;
+  depth = DEFAULT_DEPTH;
+  configForm: FormGroup;
 
-  asks: [string, number][];
-  bids: [string, number][];
-
-  depth = 5;
+  private destroy$ = new Subject();
 
   constructor(
     private activeRoute: ActivatedRoute,
     private data: DataService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private fb: FormBuilder
   ) {
     this.activeRoute.params.subscribe((val: IStockDetailsParams)  => {
       if (this.orderBookSunscription) {
@@ -34,6 +36,7 @@ export class StockDetailsComponent implements OnDestroy {
       }
       this.orderBookSunscription = this.data.getOrderBook(val.name).pipe(
         throttle(e => interval(500)),
+        takeUntil(this.destroy$)
       ).subscribe(ob => {
         this.orderBook = ob;
         this.cd.markForCheck();
@@ -41,14 +44,45 @@ export class StockDetailsComponent implements OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    this.configForm = this.fb.group({
+      depth: [this.depth, Validators.min(1)],
+      frequency: [this.data.getFrequency(), Validators.min(1)]
+    });
+    this.initListeners();
+  }
+
+  initListeners(): void {
+    this.configForm.get('depth').valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(v => {
+      if (v < 1) {
+        return;
+      }
+      this.depth = v;
+    });
+    this.configForm.get('frequency').valueChanges.pipe(
+      takeUntil(this.destroy$),
+      debounce(e => interval(500)),
+      distinctUntilChanged()
+    ).subscribe(v => {
+      if (v < 1) {
+        return;
+      }
+      this.data.setFrequency(v);
+    });
+  }
+
   sortFn = (a: KeyValue<string, string>, b: KeyValue<string, string>): number => {
     return a.key < b.key ? 1 : (b.key < a.key ? -1 : 0);
   }
 
+  getAskStart(size): number {
+    return size - this.depth < 0 ? 0 : size - this.depth;
+  }
+
   ngOnDestroy(): void {
-    if (this.orderBookSunscription) {
-      this.orderBookSunscription.unsubscribe();
-    }
+    this.destroy$.next();
   }
 
 }

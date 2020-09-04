@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { stocks } from './stocks.constants';
 
 @Component({
@@ -7,13 +7,6 @@ import { stocks } from './stocks.constants';
   styleUrls: ['./stocks.component.scss']
 })
 
-export class StocksComponent implements OnInit {
-
+export class StocksComponent {
   readonly stocks = stocks;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

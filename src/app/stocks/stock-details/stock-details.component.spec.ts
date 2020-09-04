@@ -3,6 +3,7 @@ import { StockDetailsComponent } from './stock-details.component';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, Subscription } from 'rxjs';
 import { DataService } from '../data.service';
+import { FormBuilder } from '@angular/forms';
 
 describe('StockDetailsComponent', () => {
   let component: StockDetailsComponent;
@@ -16,7 +17,8 @@ describe('StockDetailsComponent', () => {
       declarations: [ StockDetailsComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: { params: mockParams }},
-        { provide: DataService, useValue: mockDataService}
+        { provide: DataService, useValue: mockDataService},
+        { provide: FormBuilder, useValue: { group: () => {}}}
       ]
     })
     .compileComponents();

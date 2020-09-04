@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of, Subscription, merge } from 'rxjs';
+import { Observable, of, merge, Subject, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { concatMap, delay, mergeAll, filter, tap, map } from 'rxjs/operators';
+import { concatMap, delay, mergeAll, filter, tap, map, switchMap } from 'rxjs/operators';
 import { IOrder, IOrderBook, IOrderBooksMap } from './order-book/order-book.models';
 import { OrderBook } from './order-book/order-book';
+import { DEFAULT_FREQUENCY } from './stocks.constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  frequency = 50;
+  // private frequency = DEFAULT_FREQUENCY;
+
+  private frequency$ = new BehaviorSubject(DEFAULT_FREQUENCY);
 
   orderBooksMap: IOrderBooksMap = {};
 
-  getOrdersSunscription: Subscription;
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getOrderBook(stockName: string): Observable<IOrderBook> {
     if (!this.orderBooksMap[stockName]) {
@@ -28,12 +29,30 @@ export class DataService {
     const orderBookMeta = this.orderBooksMap[stockName];
     return merge(
       of(orderBookMeta.orderBook),
-      this.getNextOrders(stockName, orderBookMeta.index).pipe(
-        map(order => {
-          orderBookMeta.index++;
-          return orderBookMeta.orderBook.update(order);
-      }))
+      this.frequency$.pipe(
+        switchMap(f => {
+          return this.getNextOrders(stockName, orderBookMeta.index).pipe(
+            map(order => {
+              console.log(orderBookMeta.index++);
+              return orderBookMeta.orderBook.update(order);
+            })
+          );
+        })
+      ),
+      // this.getNextOrders(stockName, orderBookMeta.index).pipe(
+      //   map(order => {
+      //     console.log(orderBookMeta.index++);
+      //     return orderBookMeta.orderBook.update(order);
+      // }))
     );
+  }
+
+  setFrequency(value: number): void {
+    this.frequency$.next(value);
+  }
+
+  getFrequency(): number {
+    return this.frequency$.getValue();
   }
 
   private getNextOrders(stockName: string, startFromIndex: number = 0): Observable<IOrder> {
@@ -41,7 +60,7 @@ export class DataService {
       mergeAll()
     ).pipe(
       filter((v, i) => i >= startFromIndex),
-      concatMap(item => of(item).pipe(delay(this.frequency)))
+      concatMap(item => of(item).pipe(delay(this.getFrequency())))
     );
   }
 
