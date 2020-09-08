@@ -1,5 +1,8 @@
 # OrderBook
 
+Application emulates order book in trading platform. Orders are coming with configurable interval and then being aggregated in real time. Also can be configured order book depth. 
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.5.
 
 ## Development server
